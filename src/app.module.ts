@@ -11,6 +11,7 @@ import { CursosAcademiasModule } from './cursos-academias/cursos-academias.modul
 import { InscripcionModule } from './inscripcion/inscripcion.module';
 import { EvaluacionModule } from './evaluacion/evaluacion.module';
 import { CertificadoModule } from './certificado/certificado.module';
+import { NotificacionModule } from './notificacion/notificacion.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -22,7 +23,7 @@ import { CertificadoModule } from './certificado/certificado.module';
     database: 'bdd_cursos_intersemestrales',
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     synchronize: false, // ⚠️ false si ya tienes las tablas en MySQL
-  }), AcademiaModule, UsuarioModule, RolesUsuariosModule, PeriodoModule, CursoModule, CursosAcademiasModule, InscripcionModule, EvaluacionModule, CertificadoModule,],
+  }), AcademiaModule, UsuarioModule, RolesUsuariosModule, PeriodoModule, CursoModule, CursosAcademiasModule, InscripcionModule, EvaluacionModule, CertificadoModule, NotificacionModule,],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,34 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CursoService } from './curso.service';
+import { Curso } from './entities/curso.entity';
 import { CreateCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
+import { EstadoCurso } from './entities/curso.entity';
 
-@Controller('curso')
+@ApiTags('cursos')
+@Controller('cursos')
 export class CursoController {
   constructor(private readonly cursoService: CursoService) {}
 
-  @Post()
-  create(@Body() createCursoDto: CreateCursoDto) {
-    return this.cursoService.create(createCursoDto);
-  }
-
+  @ApiOperation({ summary: 'Obtener lista de cursos con filtros opcionales' })
   @Get()
-  findAll() {
-    return this.cursoService.findAll();
+  async findAll(
+    @Query('nombre') nombre?: string,
+    @Query('estado') estado?: EstadoCurso,
+  ): Promise<Curso[]> {
+    return await this.cursoService.findAll({ nombre, estado });
   }
 
+  @ApiOperation({ summary: 'Obtener un curso por ID' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cursoService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Curso> {
+    return await this.cursoService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCursoDto: UpdateCursoDto) {
-    return this.cursoService.update(+id, updateCursoDto);
+  @ApiOperation({ summary: 'Crear un nuevo curso' })
+  @Post()
+  async create(@Body() createCursoDto: CreateCursoDto): Promise<Curso> {
+    return await this.cursoService.create(createCursoDto);
   }
 
+  @ApiOperation({ summary: 'Actualizar un curso existente' })
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCursoDto: UpdateCursoDto,
+  ): Promise<Curso> {
+    return await this.cursoService.update(id, updateCursoDto);
+  }
+
+  @ApiOperation({ summary: 'Eliminar un curso' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cursoService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+    await this.cursoService.remove(id);
+    return { message: 'Curso eliminado correctamente' };
   }
 }

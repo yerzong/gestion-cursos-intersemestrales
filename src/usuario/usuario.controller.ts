@@ -1,34 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { Usuario } from './entities/usuario.entity';
 
-@Controller('usuario')
+@ApiTags('usuarios')
+@Controller('usuarios')
 export class UsuarioController {
-  constructor(private readonly usuarioService: UsuarioService) {}
+  constructor(private readonly usuarioService: UsuarioService) { }
 
-  @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuarioService.create(createUsuarioDto);
-  }
-
+  @ApiOperation({ summary: 'Obtener lista de usuarios con filtros opcionales' })
   @Get()
-  findAll() {
-    return this.usuarioService.findAll();
+  async findAll(
+    @Query('nombre') nombre?: string,
+    @Query('correo') correo?: string,
+    @Query('rol_principal') rol_principal?: string,
+  ): Promise<Usuario[]> {
+    return await this.usuarioService.findAll({ nombre, correo, rol_principal });
   }
 
+  @ApiOperation({ summary: 'Obtener un usuario por ID' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usuarioService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Usuario> {
+    return await this.usuarioService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuarioService.update(+id, updateUsuarioDto);
+  @ApiOperation({ summary: 'Crear un nuevo usuario' })
+  @Post()
+  async create(@Body() createUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
+    return await this.usuarioService.create(createUsuarioDto);
   }
 
+  @ApiOperation({ summary: 'Actualizar un usuario existente' })
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUsuarioDto: UpdateUsuarioDto,
+  ): Promise<Usuario> {
+    return await this.usuarioService.update(id, updateUsuarioDto);
+  }
+
+  @ApiOperation({ summary: 'Eliminar un usuario' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usuarioService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+    await this.usuarioService.remove(id);
+    return { message: 'Usuario eliminado correctamente' };
   }
 }

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcademiaModule } from './academia/academia.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { RolesUsuariosModule } from './roles-usuarios/roles-usuarios.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -15,7 +16,7 @@ import { UsuarioModule } from './usuario/usuario.module';
     database: 'bdd_cursos_intersemestrales',
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     synchronize: false, // ⚠️ false si ya tienes las tablas en MySQL
-  }), AcademiaModule, UsuarioModule,],
+  }), AcademiaModule, UsuarioModule, RolesUsuariosModule,],
   controllers: [AppController],
   providers: [AppService],
 })

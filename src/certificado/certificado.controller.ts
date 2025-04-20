@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CertificadoService } from './certificado.service';
+import { Certificado } from './entities/certificado.entity';
 import { CreateCertificadoDto } from './dto/create-certificado.dto';
 import { UpdateCertificadoDto } from './dto/update-certificado.dto';
 
-@Controller('certificado')
+@ApiTags('certificados')
+@Controller('certificados')
 export class CertificadoController {
   constructor(private readonly certificadoService: CertificadoService) {}
 
-  @Post()
-  create(@Body() createCertificadoDto: CreateCertificadoDto) {
-    return this.certificadoService.create(createCertificadoDto);
-  }
-
+  @ApiOperation({ summary: 'Obtener lista de certificados con filtros opcionales' })
   @Get()
-  findAll() {
-    return this.certificadoService.findAll();
+  async findAll(
+    @Query('usuarioId') usuarioId?: number,
+    @Query('cursoId') cursoId?: number,
+  ): Promise<Certificado[]> {
+    return await this.certificadoService.findAll({ usuarioId, cursoId });
   }
 
+  @ApiOperation({ summary: 'Obtener un certificado por ID' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.certificadoService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Certificado> {
+    return await this.certificadoService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCertificadoDto: UpdateCertificadoDto) {
-    return this.certificadoService.update(+id, updateCertificadoDto);
+  @ApiOperation({ summary: 'Crear un nuevo certificado' })
+  @Post()
+  async create(@Body() createCertificadoDto: CreateCertificadoDto): Promise<Certificado> {
+    return await this.certificadoService.create(createCertificadoDto);
   }
 
+  @ApiOperation({ summary: 'Actualizar un certificado existente' })
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCertificadoDto: UpdateCertificadoDto,
+  ): Promise<Certificado> {
+    return await this.certificadoService.update(id, updateCertificadoDto);
+  }
+
+  @ApiOperation({ summary: 'Eliminar un certificado' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.certificadoService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+    await this.certificadoService.remove(id);
+    return { message: 'Certificado eliminado correctamente' };
   }
 }

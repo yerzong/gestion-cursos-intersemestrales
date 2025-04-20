@@ -1,34 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { EvaluacionService } from './evaluacion.service';
+import { Evaluacion, Calificacion } from './entities/evaluacion.entity';
 import { CreateEvaluacionDto } from './dto/create-evaluacion.dto';
 import { UpdateEvaluacionDto } from './dto/update-evaluacion.dto';
 
-@Controller('evaluacion')
+@ApiTags('evaluaciones')
+@Controller('evaluaciones')
 export class EvaluacionController {
   constructor(private readonly evaluacionService: EvaluacionService) {}
 
-  @Post()
-  create(@Body() createEvaluacionDto: CreateEvaluacionDto) {
-    return this.evaluacionService.create(createEvaluacionDto);
-  }
-
+  @ApiOperation({ summary: 'Obtener lista de evaluaciones con filtros opcionales' })
   @Get()
-  findAll() {
-    return this.evaluacionService.findAll();
+  async findAll(
+    @Query('usuarioId') usuarioId?: number,
+    @Query('cursoId') cursoId?: number,
+    @Query('calificacion') calificacion?: Calificacion,
+  ): Promise<Evaluacion[]> {
+    return await this.evaluacionService.findAll({ usuarioId, cursoId, calificacion });
   }
 
+  @ApiOperation({ summary: 'Obtener una evaluación por ID' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.evaluacionService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Evaluacion> {
+    return await this.evaluacionService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEvaluacionDto: UpdateEvaluacionDto) {
-    return this.evaluacionService.update(+id, updateEvaluacionDto);
+  @ApiOperation({ summary: 'Crear una nueva evaluación' })
+  @Post()
+  async create(@Body() createEvaluacionDto: CreateEvaluacionDto): Promise<Evaluacion> {
+    return await this.evaluacionService.create(createEvaluacionDto);
   }
 
+  @ApiOperation({ summary: 'Actualizar una evaluación existente' })
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateEvaluacionDto: UpdateEvaluacionDto,
+  ): Promise<Evaluacion> {
+    return await this.evaluacionService.update(id, updateEvaluacionDto);
+  }
+
+  @ApiOperation({ summary: 'Eliminar una evaluación' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.evaluacionService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+    await this.evaluacionService.remove(id);
+    return { message: 'Evaluación eliminada correctamente' };
   }
 }

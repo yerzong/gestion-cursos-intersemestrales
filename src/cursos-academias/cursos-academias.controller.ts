@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CursosAcademiasService } from './cursos-academias.service';
-import { CreateCursosAcademiaDto } from './dto/create-cursos-academia.dto';
-import { UpdateCursosAcademiaDto } from './dto/update-cursos-academia.dto';
-
+import { CursoAcademia } from './entities/cursos-academia.entity';
+import { CreateCursoAcademiaDto } from './dto/create-cursos-academia.dto';
+import { UpdateCursoAcademiaDto } from './dto/update-cursos-academia.dto';
+@ApiTags('cursos-academias')
 @Controller('cursos-academias')
 export class CursosAcademiasController {
   constructor(private readonly cursosAcademiasService: CursosAcademiasService) {}
 
-  @Post()
-  create(@Body() createCursosAcademiaDto: CreateCursosAcademiaDto) {
-    return this.cursosAcademiasService.create(createCursosAcademiaDto);
-  }
-
+  @ApiOperation({ summary: 'Obtener lista de registros con filtros opcionales' })
   @Get()
-  findAll() {
-    return this.cursosAcademiasService.findAll();
+  async findAll(
+    @Query('cursoId') cursoId?: number,
+    @Query('academiaId') academiaId?: number,
+  ): Promise<CursoAcademia[]> {
+    return await this.cursosAcademiasService.findAll({ cursoId, academiaId });
   }
 
+  @ApiOperation({ summary: 'Obtener un registro por ID' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cursosAcademiasService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<CursoAcademia> {
+    return await this.cursosAcademiasService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCursosAcademiaDto: UpdateCursosAcademiaDto) {
-    return this.cursosAcademiasService.update(+id, updateCursosAcademiaDto);
+  @ApiOperation({ summary: 'Crear un nuevo registro' })
+  @Post()
+  async create(@Body() createCursoAcademiaDto: CreateCursoAcademiaDto): Promise<CursoAcademia> {
+    return await this.cursosAcademiasService.create(createCursoAcademiaDto);
   }
 
+  @ApiOperation({ summary: 'Actualizar un registro existente' })
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCursoAcademiaDto: UpdateCursoAcademiaDto,
+  ): Promise<CursoAcademia> {
+    return await this.cursosAcademiasService.update(id, updateCursoAcademiaDto);
+  }
+
+  @ApiOperation({ summary: 'Eliminar un registro' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cursosAcademiasService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+    await this.cursosAcademiasService.remove(id);
+    return { message: 'Registro eliminado correctamente' };
   }
 }

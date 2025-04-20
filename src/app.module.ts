@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AcademiaModule } from './academia/academia.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -13,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     database: 'bdd_cursos_intersemestrales',
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     synchronize: false, // ⚠️ false si ya tienes las tablas en MySQL
-  }),],
+  }), AcademiaModule,],
   controllers: [AppController],
   providers: [AppService],
 })

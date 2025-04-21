@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { EvaluacionService } from './evaluacion.service';
 import { Evaluacion, Calificacion } from './entities/evaluacion.entity';
 import { CreateEvaluacionDto } from './dto/create-evaluacion.dto';
@@ -11,6 +11,9 @@ export class EvaluacionController {
   constructor(private readonly evaluacionService: EvaluacionService) {}
 
   @ApiOperation({ summary: 'Obtener lista de evaluaciones con filtros opcionales' })
+  @ApiQuery({ name: 'usuarioId', required: false, type: Number })
+  @ApiQuery({ name: 'cursoId', required: false, type: Number })
+  @ApiQuery({ name: 'calificacion', required: false, enum: Calificacion })
   @Get()
   async findAll(
     @Query('usuarioId') usuarioId?: number,

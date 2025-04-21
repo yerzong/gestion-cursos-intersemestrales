@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { InscripcionService } from './inscripcion.service';
 import { Inscripcion } from './entities/inscripcion.entity';
 import { CreateInscripcionDto } from './dto/create-inscripcion.dto';
@@ -12,6 +12,9 @@ export class InscripcionController {
   constructor(private readonly inscripcionService: InscripcionService) {}
 
   @ApiOperation({ summary: 'Obtener lista de inscripciones con filtros opcionales' })
+  @ApiQuery({ name: 'usuarioId', required: false, type: Number })
+  @ApiQuery({ name: 'cursoId', required: false, type: Number })
+  @ApiQuery({ name: 'estado', required: false, enum: EstadoInscripcion })
   @Get()
   async findAll(
     @Query('usuarioId') usuarioId?: number,

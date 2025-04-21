@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Periodo } from './entities/periodo.entity';
 import { CreatePeriodoDto } from './dto/create-periodo.dto';
 import { UpdatePeriodoDto } from './dto/update-periodo.dto';
@@ -12,6 +12,8 @@ export class PeriodosController {
   constructor(private readonly periodosService: PeriodosService) {}
 
   @ApiOperation({ summary: 'Obtener lista de periodos con filtros opcionales' })
+  @ApiQuery({ name: 'nombre', required: false, type: String })
+  @ApiQuery({ name: 'estado', required: false, enum: EstadoPeriodo })
   @Get()
   async findAll(
     @Query('nombre') nombre?: string,

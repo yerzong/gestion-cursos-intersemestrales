@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CursoService } from './curso.service';
 import { Curso } from './entities/curso.entity';
 import { CreateCursoDto } from './dto/create-curso.dto';
@@ -12,6 +12,8 @@ export class CursoController {
   constructor(private readonly cursoService: CursoService) {}
 
   @ApiOperation({ summary: 'Obtener lista de cursos con filtros opcionales' })
+  @ApiQuery({ name: 'nombre', required: false, type: String })
+  @ApiQuery({ name: 'estado', required: false, enum: EstadoCurso })
   @Get()
   async findAll(
     @Query('nombre') nombre?: string,

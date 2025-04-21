@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { NotificacionService } from './notificacion.service';
 import { Notificacion } from './entities/notificacion.entity';
 import { CreateNotificacionDto } from './dto/create-notificacion.dto';
@@ -11,6 +11,7 @@ export class NotificacionController {
   constructor(private readonly notificacionService: NotificacionService) {}
 
   @ApiOperation({ summary: 'Obtener lista de notificaciones con filtros opcionales' })
+  @ApiQuery({ name: 'usuarioId', required: false, type: Number })
   @Get()
   async findAll(@Query('usuarioId') usuarioId?: number): Promise<Notificacion[]> {
     return await this.notificacionService.findAll({ usuarioId });

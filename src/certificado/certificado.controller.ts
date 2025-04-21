@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CertificadoService } from './certificado.service';
 import { Certificado } from './entities/certificado.entity';
 import { CreateCertificadoDto } from './dto/create-certificado.dto';
@@ -11,6 +11,8 @@ export class CertificadoController {
   constructor(private readonly certificadoService: CertificadoService) {}
 
   @ApiOperation({ summary: 'Obtener lista de certificados con filtros opcionales' })
+  @ApiQuery({ name: 'usuarioId', required: false, type: Number })
+  @ApiQuery({ name: 'cursoId', required: false, type: Number })
   @Get()
   async findAll(
     @Query('usuarioId') usuarioId?: number,

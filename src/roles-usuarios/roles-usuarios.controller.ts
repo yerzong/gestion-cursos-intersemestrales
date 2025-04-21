@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { RolesUsuariosService } from './roles-usuarios.service';
 import { CreateRolUsuarioDto } from './dto/create-roles-usuario.dto';
 import { UpdateRolUsuarioDto } from './dto/update-roles-usuario.dto';
@@ -11,6 +11,8 @@ export class RolesUsuariosController {
   constructor(private readonly rolesUsuariosService: RolesUsuariosService) {}
 
   @ApiOperation({ summary: 'Obtener lista de roles de usuario con filtros opcionales' })
+  @ApiQuery({ name: 'rol', required: false, type: String })
+  @ApiQuery({ name: 'usuarioId', required: false, type: Number })
   @Get()
   async findAll(
     @Query('rol') rol?: string,

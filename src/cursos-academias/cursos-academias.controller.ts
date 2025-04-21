@@ -1,15 +1,18 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CursosAcademiasService } from './cursos-academias.service';
 import { CursoAcademia } from './entities/cursos-academia.entity';
 import { CreateCursoAcademiaDto } from './dto/create-cursos-academia.dto';
 import { UpdateCursoAcademiaDto } from './dto/update-cursos-academia.dto';
+
 @ApiTags('cursos-academias')
 @Controller('cursos-academias')
 export class CursosAcademiasController {
   constructor(private readonly cursosAcademiasService: CursosAcademiasService) {}
 
   @ApiOperation({ summary: 'Obtener lista de registros con filtros opcionales' })
+  @ApiQuery({ name: 'cursoId', required: false, type: Number })
+  @ApiQuery({ name: 'academiaId', required: false, type: Number })
   @Get()
   async findAll(
     @Query('cursoId') cursoId?: number,

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Academia } from 'src/academia/entities/academia.entity';
 
@@ -33,5 +33,6 @@ export class Usuario {
 
   @ApiProperty({ description: 'Academia a la que pertenece el usuario', required: false })
   @ManyToOne(() => Academia, { nullable: true })
+  @JoinColumn({ name: 'academia_id' })
   academia?: Academia | null;
 }

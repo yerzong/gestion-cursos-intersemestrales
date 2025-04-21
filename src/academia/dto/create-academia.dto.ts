@@ -5,7 +5,7 @@ export class CreateAcademiaDto {
   @ApiProperty({ description: 'Código único de la academia', maxLength: 10 })
   @IsNotEmpty()
   @IsString()
-  @MaxLength(10)
+  @MaxLength(20)
   codigo: string;
 
   @ApiProperty({ description: 'Nombre de la academia', maxLength: 100 })

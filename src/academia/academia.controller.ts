@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { AcademiaService } from './academia.service';
 import { CreateAcademiaDto } from './dto/create-academia.dto';
 import { UpdateAcademiaDto } from './dto/update-academia.dto';
@@ -11,6 +11,8 @@ export class AcademiaController {
   constructor(private readonly academiaService: AcademiaService) {}
 
   @ApiOperation({ summary: 'Obtener lista de academias con filtros opcionales' })
+  @ApiQuery({ name: 'codigo', required: false, type: String })
+  @ApiQuery({ name: 'nombre', required: false, type: String })
   @Get()
   async findAll(
     @Query('codigo') codigo?: string,
